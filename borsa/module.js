@@ -172,4 +172,460 @@
          * Tüm hisseler için fiyat değişikliklerini simüle eder.
          */
         function startPriceSimulation() {
-            console.log("Fiyat simülasyonu 
+            console.log("Fiyat simülasyonu başlatılıyor...");
+            setInterval(() => {
+                allStocksData.forEach(stock => {
+                    const oldPrice = stock.price;
+                    // Küçük bir rastgele değişiklik simüle et (-1% ila +1%)
+                    const changePercentage = (Math.random() * 0.02 - 0.01); // -0.01 ila +0.01
+                    stock.price = parseFloat((stock.price * (1 + changePercentage)).toFixed(2));
+                    stock.change = parseFloat((stock.price - oldPrice).toFixed(2)); // Değişimi de doğru hesapla
+                });
+                // Fiyat değişikliklerini yansıtmak için mevcut görünümü yeniden render et
+                renderCurrentView();
+            }, 3000); // Her 3 saniyede bir güncelle
+            console.log("Fiyat simülasyonu devam ediyor...");
+        }
+
+        /**
+         * Tek bir hisse öğesini render eder.
+         * @param {object} stock - Hisse nesnesi.
+         * @param {string} type - 'all-stocks', 'watchlist' veya 'my-stocks'.
+         * @param {number} [lotCount] - 'my-stocks' görünümü için lot adedi.
+         * @param {number} [purchasePrice] - 'my-stocks' görünümü için alış fiyatı.
+         */
+        function renderStockItem(stock, type, lotCount = 0, purchasePrice = 0) {
+            const stockDiv = document.createElement('div');
+            // Hisse öğesine hover efekti eklendi
+            stockDiv.className = 'stock-item cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700';
+
+            // Fiyat değişimine göre renk sınıfı ve ok belirle
+            const priceClass = stock.change >= 0 ? 'price-up' : 'price-down';
+            const changeIndicator = stock.change >= 0 ? '▲' : '▼'; // Yukarı veya aşağı ok
+
+            let profitLossText = '';
+            // 'Hisselerim' görünümünde kar/zarar hesapla ve göster
+            if (type === 'my-stocks' && lotCount > 0 && purchasePrice > 0) {
+                const currentTotalValue = stock.price * lotCount;
+                const purchaseTotalValue = purchasePrice * lotCount;
+                const profitLoss = currentTotalValue - purchaseTotalValue;
+                const profitLossClass = profitLoss >= 0 ? 'price-up' : 'price-down';
+                profitLossText = `<span class="${profitLossClass} text-sm ml-2 font-medium">K/Z: ${profitLoss.toFixed(2)} TL)</span>`;
+            }
+
+            stockDiv.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="font-semibold text-lg">${stock.symbol}</span>
+                    <span class="text-sm stock-name-text">${stock.name}</span> <!-- stock-name-text sınıfı eklendi -->
+                </div>
+                <div class="flex items-center">
+                    <span class="text-lg font-bold ${priceClass}">${stock.price.toFixed(2)} TL</span>
+                    <span class="text-sm ml-2 ${priceClass}">${changeIndicator} ${Math.abs(stock.change).toFixed(2)}</span>
+                    ${profitLossText}
+                    ${type === 'all-stocks' ? `<button class="ml-4 p-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition duration-200 add-to-watchlist-btn" data-symbol="${stock.symbol}" title="Takip Listesine Ekle">+</button>` : ''}
+                    ${type === 'watchlist' ? `<button class="ml-4 p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition duration-200 remove-from-watchlist-btn" data-symbol="${stock.symbol}" title="Takip Listesinden Çıkar">-</button>` : ''}
+                    ${type === 'my-stocks' ? `<button class="ml-4 p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition duration-200 remove-from-my-stocks-btn" data-symbol="${stock.symbol}" title="Portföyden Çıkar">x</button>` : ''}
+                </div>
+            `;
+
+            // Hisseye tıklama olayı - Sadece hisse öğesinin kendisine tıklama için
+            stockDiv.addEventListener('click', (e) => {
+                // Eğer tıklanan öğe bir buton değilse (yani hisse öğesinin kendisiyse)
+                if (!e.target.closest('button')) {
+                    if (type === 'all-stocks') {
+                        showAddMyStockModal(stock.symbol);
+                    } else if (type === 'watchlist') {
+                        const existingMyStock = myStocks.find(s => s.symbol === stock.symbol);
+                        if (existingMyStock) {
+                            showAddMyStockModal(stock.symbol, existingMyStock.lot, existingMyStock.purchasePrice);
+                        } else {
+                            showAddMyStockModal(stock.symbol); // Takip listesindeki hisse portföyde yoksa yeni ekle
+                        }
+                    } else if (type === 'my-stocks') {
+                        showMyStockDetails(stock.symbol, lotCount, purchasePrice);
+                    }
+                }
+            });
+
+            return stockDiv;
+        }
+
+        /**
+         * Tüm hisseler listesini render eder.
+         * @param {string} searchTerm - Hisseleri filtrelemek için isteğe bağlı arama terimi.
+         */
+        function renderAllStocks(searchTerm = '') {
+            console.log("renderAllStocks çağrıldı, arama terimi:", searchTerm);
+            stockListContainer.innerHTML = ''; // İçeriği temizle
+            const filteredStocks = allStocksData.filter(stock =>
+                stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                stock.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filteredStocks.length === 0) {
+                stockListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 mt-8">Hisse bulunamadı.</p>';
+                return;
+            }
+
+            filteredStocks.forEach(stock => {
+                stockListContainer.appendChild(renderStockItem(stock, 'all-stocks'));
+            });
+
+            // "Takip listesine ekle" butonları için olay dinleyicileri ekle
+            document.querySelectorAll('.add-to-watchlist-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Hisse öğesi tıklamasını engelle
+                    const symbol = e.target.dataset.symbol;
+                    addToWatchlist(symbol);
+                });
+            });
+            console.log("Tüm hisseler render edildi.");
+        }
+
+        /**
+         * Kullanıcının takip listesini render eder.
+         * @param {string} searchTerm - Hisseleri filtrelemek için isteğe bağlı arama terimi.
+         */
+        function renderWatchlist(searchTerm = '') {
+            console.log("renderWatchlist çağrıldı, arama terimi:", searchTerm);
+            stockListContainer.innerHTML = '';
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+            const filteredWatchlistSymbols = watchlist.filter(symbol => {
+                const stock = allStocksData.find(s => s.symbol === symbol);
+                if (stock) {
+                    return symbol.toLowerCase().includes(lowerCaseSearchTerm) ||
+                           stock.name.toLowerCase().includes(lowerCaseSearchTerm);
+                }
+                return false;
+            });
+
+            if (filteredWatchlistSymbols.length === 0) {
+                stockListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 mt-8">Takip listeniz boş veya aradığınız hisse bulunamadı. <br> "Tüm Hisseler" sayfasından hisse ekleyebilirsiniz.</p>';
+                return;
+            }
+
+            filteredWatchlistSymbols.forEach(symbol => {
+                const stock = allStocksData.find(s => s.symbol === symbol);
+                if (stock) {
+                    stockListContainer.appendChild(renderStockItem(stock, 'watchlist'));
+                }
+            });
+
+            // "Takip listesinden çıkar" butonları için olay dinleyicileri ekle
+            document.querySelectorAll('.remove-from-watchlist-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const symbol = e.target.dataset.symbol;
+                    removeFromWatchlist(symbol);
+                });
+            });
+            console.log("Takip listesi render edildi.");
+        }
+
+        /**
+         * Kullanıcının sahip olduğu hisseleri render eder.
+         * @param {string} searchTerm - Hisseleri filtrelemek için isteğe bağlı arama terimi.
+         */
+        function renderMyStocks(searchTerm = '') {
+            stockListContainer.innerHTML = '';
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+            console.log("--- renderMyStocks Başlangıcı ---");
+            console.log("Arama Terimi:", searchTerm);
+            console.log("Mevcut myStocks (başlangıç):", JSON.parse(JSON.stringify(myStocks))); // Hata ayıklama için derin kopya
+
+            const filteredMyStocks = myStocks.filter(myStock => {
+                const correspondingStock = allStocksData.find(s => s.symbol === myStock.symbol);
+                if (!correspondingStock) {
+                    console.warn(`Hisse ${myStock.symbol} allStocksData içinde bulunamadı. Bu hisse filtrelenmeyecek.`);
+                    return false; // allStocksData'da yoksa filtrele
+                }
+
+                const symbolMatch = myStock.symbol.toLowerCase().includes(lowerCaseSearchTerm);
+                const nameMatch = correspondingStock.name.toLowerCase().includes(lowerCaseSearchTerm);
+                const match = symbolMatch || nameMatch;
+
+                console.log(`Hisse: ${myStock.symbol}, İsim: ${correspondingStock.name}`);
+                console.log(`  Sembol Eşleşmesi (${myStock.symbol} vs ${lowerCaseSearchTerm}): ${symbolMatch}`);
+                console.log(`  İsim Eşleşmesi (${correspondingStock.name} vs ${lowerCaseSearchTerm}): ${nameMatch}`);
+                console.log(`  Genel Eşleşme: ${match}`);
+                return match;
+            });
+
+            console.log("Filtrelenmiş myStocks (sonuç):", JSON.parse(JSON.stringify(filteredMyStocks)));
+
+            if (filteredMyStocks.length === 0) {
+                // Eğer myStocks boşsa ve arama yapılmıyorsa
+                if (myStocks.length === 0 && searchTerm === '') {
+                    stockListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 mt-8">Hisseleriniz bulunmuyor. <br> "Tüm Hisseler" sayfasından bir hisseye tıklayıp lot ekleyerek portföyünüze ekleyebilirsiniz.</p>';
+                }
+                // Eğer myStocks doluysa ama arama sonucu boşsa
+                else if (myStocks.length > 0 && searchTerm !== '') {
+                    stockListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 mt-8">Aradığınız hisse portföyünüzde bulunmuyor.</p>';
+                }
+                // Diğer boş senaryolar için yedek (örn. myStocks boş ve arama yapılıyor)
+                else {
+                    stockListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 mt-8">Hisseleriniz bulunmuyor.</p>';
+                }
+                console.log("--- renderMyStocks Bitti (Boş Sonuç) ---");
+                return;
+            }
+
+            filteredMyStocks.forEach(myStock => {
+                const stock = allStocksData.find(s => s.symbol === myStock.symbol);
+                if (stock) {
+                    stockListContainer.appendChild(renderStockItem(stock, 'my-stocks', myStock.lot, myStock.purchasePrice));
+                }
+            });
+
+            // "Portföyden çıkar" butonları için olay dinleyicileri ekle
+            document.querySelectorAll('.remove-from-my-stocks-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const symbol = e.target.dataset.symbol;
+                    removeFromMyStocks(symbol);
+                });
+            });
+            console.log("--- renderMyStocks Bitti (Hisseler Render Edildi) ---");
+        }
+
+        /**
+         * Bir hisseyi takip listesine ekler.
+         * @param {string} symbol - Eklenecek hissenin sembolü.
+         */
+        function addToWatchlist(symbol) {
+            if (!watchlist.includes(symbol)) {
+                watchlist.push(symbol);
+                saveDataToLocalStorage();
+                if (currentView === 'all-stocks' || currentView === 'watchlist') {
+                    renderCurrentView(); // Güncel durumu göstermek için yeniden render et
+                }
+                showMessage(`"${symbol}" takip listenize eklendi!`, "success");
+            } else {
+                showMessage(`"${symbol}" zaten takip listenizde.`);
+            }
+        }
+
+        /**
+         * Bir hisseyi takip listesinden çıkarır.
+         * @param {string} symbol - Çıkarılacak hissenin sembolü.
+         */
+        function removeFromWatchlist(symbol) {
+            watchlist = watchlist.filter(s => s !== symbol);
+            saveDataToLocalStorage();
+            if (currentView === 'watchlist') {
+                renderWatchlist(searchInput.value); // Mevcut arama terimiyle takip listesini yeniden render et
+            }
+            showMessage(`"${symbol}" takip listenizden çıkarıldı.`);
+        }
+
+        /**
+         * Bir hisseyi "Hisselerim" portföyünden çıkarır.
+         * @param {string} symbol - Çıkarılacak hissenin sembolü.
+         */
+        function removeFromMyStocks(symbol) {
+            myStocks = myStocks.filter(s => s.symbol !== symbol);
+            saveDataToLocalStorage();
+            if (currentView === 'my-stocks') {
+                renderMyStocks(searchInput.value); // Mevcut arama terimiyle portföyü yeniden render et
+            }
+            showMessage(`"${symbol}" portföyünüzden çıkarıldı.`);
+        }
+
+        /**
+         * "Hisselerim"e hisse eklemek/düzenlemek için modalı gösterir.
+         * @param {string} symbol - Hisse sembolü.
+         * @param {number} [lot] - Düzenleniyorsa mevcut lot adedi.
+         * @param {number} [price] - Düzenleniyorsa mevcut alış fiyatı.
+         */
+        function showAddMyStockModal(symbol, lot = 1, price = 0) {
+            selectedStockForModal = symbol;
+            modalStockSymbol.textContent = symbol;
+            lotCountInput.value = lot;
+            purchasePriceInput.value = price.toFixed(2);
+            addStockModal.style.display = 'flex'; // Ortalamak için flex kullan
+            console.log(`Modal açıldı: ${symbol}, Lot: ${lot}, Fiyat: ${price}`);
+        }
+
+        /**
+         * Hisse ekleme modalını gizler.
+         */
+        function hideAddStockModal() {
+            addStockModal.style.display = 'none';
+            selectedStockForModal = null;
+            console.log("Modal kapatıldı.");
+        }
+
+        /**
+         * Modal'dan "Hisselerim"e hisse ekleme/güncelleme işlemini yönetir.
+         */
+        function confirmAddMyStock() {
+            const symbol = selectedStockForModal;
+            const lot = parseInt(lotCountInput.value);
+            const purchasePrice = parseFloat(purchasePriceInput.value);
+
+            console.log(`Hisse ekleme/güncelleme onayı: Sembol: ${symbol}, Lot: ${lot}, Alış Fiyatı: ${purchasePrice}`);
+
+            if (!symbol || isNaN(lot) || lot <= 0 || isNaN(purchasePrice) || purchasePrice < 0) {
+                showMessage('Lütfen geçerli lot adedi ve alış fiyatı girin.', 'error');
+                console.error("Geçersiz lot adedi veya alış fiyatı.");
+                return;
+            }
+
+            const existingStockIndex = myStocks.findIndex(s => s.symbol === symbol);
+            if (existingStockIndex !== -1) {
+                // Mevcut hisseyi güncelle
+                myStocks[existingStockIndex].lot = lot;
+                myStocks[existingStockIndex].purchasePrice = purchasePrice;
+                showMessage(`"${symbol}" hissesi güncellendi.`, "success"); // Başarılı güncelleme mesajı
+                console.log(`Hisse güncellendi: ${symbol}`);
+            } else {
+                // Yeni hisse ekle
+                myStocks.push({ symbol, lot, purchasePrice });
+                showMessage(`"${symbol}" hissesi portföyünüze eklendi!`, "success"); // Başarılı ekleme mesajı
+                console.log(`Hisse eklendi: ${symbol}`);
+            }
+            saveDataToLocalStorage();
+            hideAddStockModal();
+            renderCurrentView(); // Mevcut görünümü yeniden render et
+        }
+
+        /**
+         * "Hisselerim"deki bir hissenin detaylarını gösterir (şu an sadece ekleme/düzenleme modalını açar).
+         * @param {string} symbol - Hisse sembolü.
+         * @param {number} lot - Lot adedi.
+         * @param {number} price - Alış fiyatı.
+         */
+        function showMyStockDetails(symbol, lot, price) {
+            console.log(`Hisse detayları gösteriliyor: ${symbol}, Lot: ${lot}, Fiyat: ${price}`);
+            // Basitlik için, 'Hisselerim'deki bir hisseye tıklamak,
+            // mevcut detaylarıyla önceden doldurulmuş modalı açacaktır.
+            showAddMyStockModal(symbol, lot, price);
+        }
+
+        /**
+         * Mevcut aktif görünümü (Tüm Hisseler, Takip Listem veya Hisselerim) render eder.
+         */
+        function renderCurrentView() {
+            console.log(`Görünüm değiştiriliyor: ${currentView}`);
+            const searchTerm = searchInput.value.trim();
+            // Tüm butonların aktif durumunu sıfırla
+            allStocksBtn.classList.remove('active');
+            watchlistBtn.classList.remove('active');
+            myStocksBtn.classList.remove('active');
+
+            switch (currentView) {
+                case 'all-stocks':
+                    renderAllStocks(searchTerm);
+                    allStocksBtn.classList.add('active');
+                    break;
+                case 'watchlist':
+                    renderWatchlist(searchTerm);
+                    watchlistBtn.classList.add('active');
+                    break;
+                case 'my-stocks':
+                    renderMyStocks(searchTerm);
+                    myStocksBtn.classList.add('active');
+                    break;
+            }
+        }
+
+        /**
+         * Kullanıcıya geçici bir mesaj gösterir (alert yerine).
+         * @param {string} message - Gösterilecek mesaj.
+         * @param {string} type - Stil için 'success' veya 'error'.
+         */
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `fixed top-4 left-1/2 -translate-x-1/2 p-3 rounded-lg shadow-lg text-white z-50 transition-all duration-300 ease-out transform ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000); // Mesaj 3 saniye sonra kaybolur
+        }
+
+        /**
+         * Tema ayarlarını yapar ve localStorage'dan tema tercihini yükler.
+         */
+        function setupTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            } else {
+                // Varsayılan tema: açık
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.documentElement.classList.remove('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Koyu ve açık mod arasında geçiş yapar.
+         */
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                html.classList.add('dark');
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+            console.log("Tema değiştirildi:", localStorage.getItem('theme'));
+        }
+
+        // Olay Dinleyicileri
+        allStocksBtn.addEventListener('click', () => {
+            currentView = 'all-stocks';
+            searchInput.value = ''; // Görünüm değiştirirken arama çubuğunu temizle
+            renderCurrentView();
+        });
+
+        watchlistBtn.addEventListener('click', () => {
+            currentView = 'watchlist';
+            searchInput.value = ''; // Görünüm değiştirirken arama çubuğunu temizle
+            renderCurrentView();
+        });
+
+        myStocksBtn.addEventListener('click', () => {
+            currentView = 'my-stocks';
+            searchInput.value = ''; // Görünüm değiştirirken arama çubuğunu temizle
+            renderCurrentView();
+        });
+
+        searchInput.addEventListener('input', () => {
+            renderCurrentView(); // Mevcut arama terimiyle yeniden render et
+        });
+
+        closeModalButton.addEventListener('click', hideAddStockModal);
+        confirmAddStockButton.addEventListener('click', confirmAddMyStock);
+        darkModeToggle.addEventListener('click', toggleDarkMode); // Tema değiştirme butonu
+
+        // Modal dışına tıklandığında modalı kapat
+        window.addEventListener('click', (event) => {
+            if (event.target === addStockModal) {
+                hideAddStockModal();
+            }
+        });
+
+        // DOM tamamen yüklendiğinde uygulamayı başlat
+        window.onload = initializeApp;
