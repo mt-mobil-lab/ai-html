@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borsa Uygulaması</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Tailwind CSS'in dark modunu etkinleştir */
+        html.dark {
+            /* Bu kural, html elementinin arka planını koyu yapar */
+            --tw-bg-opacity: 1;
+            background-color: rgb(17 24 39 / var(--tw-bg-opacity)); /* Koyu mod arka planı */
+            color: #e5e7eb; /* Koyu mod metin rengi */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Tema geçişleri için animasyon */
+            /* Body'nin varsayılan arka plan rengi (açık mod için) */
+            background-color: white;
+        }
+        /* Koyu moda geçildiğinde body'nin arka planını kesin olarak koyu yap */
+        html.dark body {
+            background-color: #111827 !important; /* Tailwind'in gray-900 karşılığı */
+        }
+        /* Açık modda body'nin arka planını kesin olarak beyaz yap (her ihtimale karşı) */
+        html:not(.dark) body {
+            background-color: white !important;
+        }
+
+        /* Hisse öğesi stil ayarları */
+        .stock-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb; /* Açık mod kenarlık */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white; /* Açık mod hisse öğesi arka planı */
+            color: #333; /* Açık mod metin rengi */
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .stock-item {
+            background-color: #374151; /* Koyu mod hisse öğesi arka planı */
+            border-color: #4b5563; /* Koyu mod kenarlık rengi */
+            color: #e5e7eb;
+        }
+        .stock-item:last-child {
+            border-bottom: none;
+        }
+        /* Fiyat yükseliş rengi */
+        .price-up {
+            color: #10b981; /* Yeşil */
+        }
+        /* Fiyat düşüş rengi */
+        .price-down {
+            color: #ef4444; /* Kırmızı */
+        }
+        /* Navigasyon butonu stil ayarları */
+        .nav-button {
+            flex: 1;
+            padding: 0.75rem 0;
+            text-align: center;
+            font-weight: 500;
+            color: #4b5563; /* Açık mod navigasyon butonu metin rengi (gray-600) */
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.5rem;
+        }
+        html.dark .nav-button {
+            color: #9ca3af; /* Koyu mod navigasyon butonu metin rengi */
+        }
+        /* Aktif navigasyon butonu stil ayarları */
+        .nav-button.active {
+            color: #3b82f6; /* Mavi metin rengi */
+            background-color: #e0f2fe; /* Açık mavi arka plan */
+        }
+        html.dark .nav-button.active {
+            background-color: #1e3a8a; /* Koyu mod aktif navigasyon butonu arka planı */
+            color: #bfdbfe; /* Koyu mod aktif navigasyon butonu metin rengi */
+        }
+        /* Navigasyon butonu üzerine gelindiğinde stil ayarları */
+        .nav-button:hover:not(.active) {
+            background-color: #e5e7eb; /* Açık mod hover arka planı (gray-200) */
+        }
+        html.dark .nav-button:hover:not(.active) {
+            background-color: #4b5563; /* Koyu mod hover arka planı */
+        }
+        /* Modal stil ayarları */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        /* Modal içeriği stil ayarları */
+        .modal-content {
+            background-color: #fefefe; /* Açık mod modal arka planı */
+            color: #333; /* Açık mod modal metin rengi */
+            margin: auto;
+            padding: 1.5rem;
+            border: 1px solid #d1d5db; /* Açık mod modal kenarlık (gray-300) */
+            width: 90%;
+            max-width: 400px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .modal-content {
+            background-color: #1f2937; /* Koyu mod modal arka planı */
+            border-color: #4b5563; /* Koyu mod modal kenarlık rengi */
+            color: #e5e7eb;
+        }
+        /* Kapat butonu stil ayarları */
+        .close-button {
+            color: #6b7280; /* Açık mod kapat butonu rengi (gray-500) */
+            float: right;
+            font-size: 1.75rem;
+            font-weight: bold;
+        }
+        html.dark .close-button {
+            color: #9ca3af; /* Koyu mod kapat butonu rengi */
+        }
+        /* Kapat butonu üzerine gelindiğinde stil ayarları */
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        html.dark .close-button:hover,
+        html.dark .close-button:focus {
+            color: white; /* Koyu mod hover rengi */
+        }
+
+        /* Arama çubuğu ve input stilleri */
+        .search-input {
+            background-color: white; /* Açık mod arama input arka planı */
+            color: #333; /* Açık mod arama input metin rengi */
+            border-color: #d1d5db; /* Açık mod arama input kenarlık (gray-300) */
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .search-input {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            border-color: #4b5563;
+        }
+        html.dark .search-input::placeholder {
+            color: #9ca3af;
+        }
+        .dark-mode-toggle {
+            background-color: #e0f2fe; /* Açık mod toggle arka planı */
+            color: #3b82f6; /* Açık mod toggle ikon rengi */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        html.dark .dark-mode-toggle {
+            background-color: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        /* Hisse adı için renk */
+        .stock-name-text {
+            color: #6b7280; /* Açık modda gray-500 */
+        }
+        html.dark .stock-name-text {
+            color: #9ca3af; /* Koyu modda gray-400 */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+    <div class="container mx-auto p-4 flex-grow max-w-lg pb-20">
+        <!-- Üst Kısım: Arama Çubuğu ve Tema Değiştirme -->
+        <div class="flex items-center justify-between mb-4">
+            <input type="text" id="search-input" placeholder="Hisse ara..." class="search-input w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+            <button id="dark-mode-toggle" class="dark-mode-toggle ml-3 p-2 rounded-full shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+                <!-- SVG Icon for Sun/Moon -->
+                <svg id="sun-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.325 5.325l-.707.707M6.343 6.343l-.707-.707m12.728 0l-.707-.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg id="moon-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Ana İçerik Alanı -->
+        <div id="stock-list-container">
+            <!-- Hisse öğeleri buraya render edilecek -->
+        </div>
+    </div>
+
+    <!-- Hisse Ekleme Modalı -->
+    <div id="add-stock-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal-button">&times;</span>
+            <h2 class="text-xl font-semibold mb-4">Hisse Ekle: <span id="modal-stock-symbol"></span></h2>
+            <div class="mb-4">
+                <label for="lot-count-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lot Adedi</label>
+                <input type="number" id="lot-count-input" class="w-full p-2 border border-gray-300 rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" min="1" value="1">
+            </div>
+            <div class="mb-4">
+                <label for="purchase-price-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alış Fiyatı</label>
+                <input type="number" id="purchase-price-input" class="w-full p-2 border border-gray-300 rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" step="0.01" value="0.00">
+            </div>
+            <button id="confirm-add-stock-button" class="w-full bg-blue-500 text-white p-3 rounded-lg font-semibold hover:bg-blue-600 transition duration-200 dark:bg-blue-600 dark:hover:bg-blue-700">Ekle</button>
+        </div>
+    </div>
+
+    <!-- Alt Navigasyon Çubuğu -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg p-3 flex justify-around items-center rounded-t-xl z-50 dark:bg-gray-800 dark:border-gray-700">
+        <button id="all-stocks-btn" class="nav-button active">Tüm Hisseler</button>
+        <button id="watchlist-btn" class="nav-button">Takip Listem</button>
+        <button id="my-stocks-btn" class="nav-button">Hisselerim</button>
+    </nav>
+
+    <script type="module">
+        // Firebase yapılandırması ve başlatılması (Firestore için)
+        // Bu kısım, Firestore'a ihtiyaç duyulursa eklenecektir. Şimdilik localStorage kullanılıyor.
+
+        // Canvas ortamı tarafından sağlanan global Firebase değişkenleri
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Firebase uygulaması ve servisleri
+        let app, db, auth;
+        let userId = 'anonymous'; // Varsayılan olarak anonim kullanıcı
+
+        // Sahte hisse senedi verileri (Türk hisse senetlerini simüle ediyor)
+        let allStocksData = [
+            { symbol: 'THYAO', name: 'Türk Hava Yolları', price: 250.00, change: 0.00 },
+            { symbol: 'ISCTR', name: 'İş Bankası C', price: 15.50, change: 0.00 },
+            { symbol: 'GARAN', name: 'Garanti Bankası', price: 30.25, change: 0.00 },
+            { symbol: 'TUPRS', name: 'Tüpraş', price: 160.75, change: 0.00 },
+            { symbol: 'BIMAS', name: 'BİM Mağazaları', price: 320.10, change: 0.00 },
+            { symbol: 'FROTO', name: 'Ford Otosan', price: 950.00, change: 0.00 },
+            { symbol: 'KCHOL', name: 'Koç Holding', price: 180.50, change: 0.00 },
+            { symbol: 'SAHOL', name: 'Sabancı Holding', price: 75.80, change: 0.00 },
+            { symbol: 'EREGL', name: 'Ereğli Demir Çelik', price: 45.30, change: 0.00 },
+            { symbol: 'SISE', name: 'Şişecam', price: 55.60, change: 0.00 },
+            { symbol: 'ASELS', name: 'Aselsan', price: 70.00, change: 0.00 },
+            { symbol: 'VESTL', name: 'Vestel', price: 28.90, change: 0.00 },
+            { symbol: 'PGSUS', name: 'Pegasus', price: 800.00, change: 0.00 },
+            { symbol: 'AKBNK', name: 'Akbank', price: 18.20, change: 0.00 },
+            { symbol: 'YKBNK', name: 'Yapı Kredi Bankası', price: 12.10, change: 0.00 },
+        ];
+
+        let watchlist = []; // Takip listesindeki hisse sembollerini saklar
+        let myStocks = []; // Sahip olunan hisseleri saklar: { symbol, lot, purchasePrice }
+
+        let currentView = 'all-stocks'; // Mevcut görünüm: 'all-stocks', 'watchlist', 'my-stocks'
+        let selectedStockForModal = null; // Modala aktarılacak hisse sembolü için kullanılır
+
+        // DOM Elemanları
+        const stockListContainer = document.getElementById('stock-list-container');
+        const searchInput = document.getElementById('search-input');
+        const allStocksBtn = document.getElementById('all-stocks-btn');
+        const watchlistBtn = document.getElementById('watchlist-btn');
+        const myStocksBtn = document.getElementById('my-stocks-btn');
+        const addStockModal = document.getElementById('add-stock-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const modalStockSymbol = document.getElementById('modal-stock-symbol');
+        const lotCountInput = document.getElementById('lot-count-input');
+        const purchasePriceInput = document.getElementById('purchase-price-input');
+        const confirmAddStockButton = document.getElementById('confirm-add-stock-button');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+
+        /**
+         * Uygulamayı başlatır, verileri yerel depolamadan yükler
+         * ve Firebase yapılandırması varsa Firebase'i kurar.
+         */
+        async function initializeApp() {
+            console.log("Uygulama başlatılıyor...");
+            try {
+                loadDataFromLocalStorage(); // Verileri yerel depolamadan yükle
+                // Verilerin başarıyla yüklendiğini gösteren mesajı sadece ilk yüklemede göster
+                if (myStocks.length > 0 || watchlist.length > 0) {
+                    showMessage("Veriler başarıyla yüklendi.", "success");
+                }
+            } catch (e) {
+                console.error("initializeApp'da veri yükleme hatası:", e); // Daha spesifik hata günlüğü
+                showMessage("Veriler yüklenirken bir hata oluştu. Yeni veri oluşturuluyor.", "error");
+            }
+            await setupFirebase(); // Firebase'i kur (varsa)
+            setupTheme(); // Tema ayarlarını yap
+            renderCurrentView(); // Başlangıç görünümünü render et
+            startPriceSimulation(); // Fiyat simülasyonunu başlat
+            console.log("Uygulama başlatma tamamlandı.");
+        }
+
+        /**
+         * Firebase kimlik doğrulamasını ve Firestore'u kurar.
+         */
+        async function setupFirebase() {
+            console.log("Firebase kurulumu başlatılıyor...");
+            try {
+                // Sadece firebaseConfig boş değilse başlat
+                if (Object.keys(firebaseConfig).length > 0) {
+                    // Firebase modüllerini dinamik olarak içe aktar
+                    const { initializeApp: firebaseInitializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+                    const { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                    const { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, addDoc, getDocs, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+                    app = firebaseInitializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    // Özel token ile veya anonim olarak oturum aç
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        console.log("Firebase: Özel token ile oturum açıldı.");
+                    } else {
+                        await signInAnonymously(auth);
+                        console.log("Firebase: Anonim olarak oturum açıldı.");
+                    }
+
+                    // Kullanıcı kimlik doğrulama durumu değişikliklerini dinle
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            console.log("Firebase Kullanıcı Kimliği:", userId);
+                            // userId'ye sahip olduğumuzda, Firestore'a yükleme/kaydetme potansiyeli var
+                            // Bu uygulama için, istenildiği gibi localStorage'ı kullanmaya devam edeceğiz.
+                        } else {
+                            userId = crypto.randomUUID(); // Anonim veya kullanıcı yoksa yedek
+                            console.log("Firebase Kullanıcı Kimliği (anonim/rastgele):", userId);
+                        }
+                    });
+                } else {
+                    console.warn("Firebase yapılandırması sağlanmadı. Veriler yalnızca localStorage'da saklanacaktır.");
+                    // Firebase yapılandırılmamışsa rastgele UUID'ye geri dön
+                    userId = crypto.randomUUID();
+                }
+            } catch (error) {
+                console.error("Firebase başlatma başarısız oldu:", error);
+                // Firebase başlatma başarısız olursa rastgele UUID'ye geri dön
+                userId = crypto.randomUUID();
+            }
+            console.log("Firebase kurulumu tamamlandı.");
+        }
+
+        /**
+         * Takip listesi ve hisselerim verilerini localStorage'dan yükler.
+         */
+        function loadDataFromLocalStorage() {
+            console.log("localStorage'dan veri yükleniyor...");
+            try {
+                const storedWatchlist = localStorage.getItem('watchlist');
+                const storedMyStocks = localStorage.getItem('myStocks');
+
+                if (storedWatchlist) {
+                    watchlist = JSON.parse(storedWatchlist);
+                }
+                if (storedMyStocks) {
+                    myStocks = JSON.parse(storedMyStocks);
+                }
+                console.log("Yüklenen Takip Listesi:", watchlist);
+                console.log("Yüklenen Hisselerim:", myStocks);
+            } catch (e) {
+                console.error("localStorage'dan veri yüklenirken hata:", e);
+                watchlist = [];
+                myStocks = [];
+                throw e; // Hatanın initializeApp'e yayılmasını sağla
+            }
+            console.log("localStorage'dan veri yükleme tamamlandı.");
+        }
+
+        /**
+         * Takip listesi ve hisselerim verilerini localStorage'a kaydeder.
+         */
+        function saveDataToLocalStorage() {
+            console.log("localStorage'a veri kaydediliyor...");
+            try {
+                localStorage.setItem('watchlist', JSON.stringify(watchlist));
+                localStorage.setItem('myStocks', JSON.stringify(myStocks));
+                console.log("Kaydedilen Takip Listesi:", watchlist);
+                console.log("Kaydedilen Hisselerim:", myStocks);
+            } catch (e) {
+                console.error("localStorage'a veri kaydedilirken hata:", e);
+                showMessage("Veriler kaydedilirken bir hata oluştu.", "error");
+            }
+            console.log("localStorage'a veri kaydetme tamamlandı.");
+        }
+
+        /**
+         * Tüm hisseler için fiyat değişikliklerini simüle eder.
+         */
+        function startPriceSimulation() {
+            console.log("Fiyat simülasyonu 
