@@ -1,0 +1,168 @@
+
+        /* Tailwind CSS'in dark modunu etkinleştir */
+        html.dark {
+            /* Bu kural, html elementinin arka planını koyu yapar */
+            --tw-bg-opacity: 1;
+            background-color: rgb(17 24 39 / var(--tw-bg-opacity)); /* Koyu mod arka planı */
+            color: #e5e7eb; /* Koyu mod metin rengi */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Tema geçişleri için animasyon */
+            /* Body'nin varsayılan arka plan rengi (açık mod için) */
+            background-color: white;
+        }
+        /* Koyu moda geçildiğinde body'nin arka planını kesin olarak koyu yap */
+        html.dark body {
+            background-color: #111827 !important; /* Tailwind'in gray-900 karşılığı */
+        }
+        /* Açık modda body'nin arka planını kesin olarak beyaz yap (her ihtimale karşı) */
+        html:not(.dark) body {
+            background-color: white !important;
+        }
+
+        /* Hisse öğesi stil ayarları */
+        .stock-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb; /* Açık mod kenarlık */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white; /* Açık mod hisse öğesi arka planı */
+            color: #333; /* Açık mod metin rengi */
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .stock-item {
+            background-color: #374151; /* Koyu mod hisse öğesi arka planı */
+            border-color: #4b5563; /* Koyu mod kenarlık rengi */
+            color: #e5e7eb;
+        }
+        .stock-item:last-child {
+            border-bottom: none;
+        }
+        /* Fiyat yükseliş rengi */
+        .price-up {
+            color: #10b981; /* Yeşil */
+        }
+        /* Fiyat düşüş rengi */
+        .price-down {
+            color: #ef4444; /* Kırmızı */
+        }
+        /* Navigasyon butonu stil ayarları */
+        .nav-button {
+            flex: 1;
+            padding: 0.75rem 0;
+            text-align: center;
+            font-weight: 500;
+            color: #4b5563; /* Açık mod navigasyon butonu metin rengi (gray-600) */
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.5rem;
+        }
+        html.dark .nav-button {
+            color: #9ca3af; /* Koyu mod navigasyon butonu metin rengi */
+        }
+        /* Aktif navigasyon butonu stil ayarları */
+        .nav-button.active {
+            color: #3b82f6; /* Mavi metin rengi */
+            background-color: #e0f2fe; /* Açık mavi arka plan */
+        }
+        html.dark .nav-button.active {
+            background-color: #1e3a8a; /* Koyu mod aktif navigasyon butonu arka planı */
+            color: #bfdbfe; /* Koyu mod aktif navigasyon butonu metin rengi */
+        }
+        /* Navigasyon butonu üzerine gelindiğinde stil ayarları */
+        .nav-button:hover:not(.active) {
+            background-color: #e5e7eb; /* Açık mod hover arka planı (gray-200) */
+        }
+        html.dark .nav-button:hover:not(.active) {
+            background-color: #4b5563; /* Koyu mod hover arka planı */
+        }
+        /* Modal stil ayarları */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        /* Modal içeriği stil ayarları */
+        .modal-content {
+            background-color: #fefefe; /* Açık mod modal arka planı */
+            color: #333; /* Açık mod modal metin rengi */
+            margin: auto;
+            padding: 1.5rem;
+            border: 1px solid #d1d5db; /* Açık mod modal kenarlık (gray-300) */
+            width: 90%;
+            max-width: 400px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .modal-content {
+            background-color: #1f2937; /* Koyu mod modal arka planı */
+            border-color: #4b5563; /* Koyu mod modal kenarlık rengi */
+            color: #e5e7eb;
+        }
+        /* Kapat butonu stil ayarları */
+        .close-button {
+            color: #6b7280; /* Açık mod kapat butonu rengi (gray-500) */
+            float: right;
+            font-size: 1.75rem;
+            font-weight: bold;
+        }
+        html.dark .close-button {
+            color: #9ca3af; /* Koyu mod kapat butonu rengi */
+        }
+        /* Kapat butonu üzerine gelindiğinde stil ayarları */
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        html.dark .close-button:hover,
+        html.dark .close-button:focus {
+            color: white; /* Koyu mod hover rengi */
+        }
+
+        /* Arama çubuğu ve input stilleri */
+        .search-input {
+            background-color: white; /* Açık mod arama input arka planı */
+            color: #333; /* Açık mod arama input metin rengi */
+            border-color: #d1d5db; /* Açık mod arama input kenarlık (gray-300) */
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .search-input {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            border-color: #4b5563;
+        }
+        html.dark .search-input::placeholder {
+            color: #9ca3af;
+        }
+        .dark-mode-toggle {
+            background-color: #e0f2fe; /* Açık mod toggle arka planı */
+            color: #3b82f6; /* Açık mod toggle ikon rengi */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        html.dark .dark-mode-toggle {
+            background-color: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        /* Hisse adı için renk */
+        .stock-name-text {
+            color: #6b7280; /* Açık modda gray-500 */
+        }
+        html.dark .stock-name-text {
+            color: #9ca3af; /* Koyu modda gray-400 */
+        }
