@@ -1,0 +1,181 @@
+      /* Ensure html and body take full height and remove default margins/paddings */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #333;
+            padding: 2rem; /* Add some padding to the body content */
+        }
+        .book-cover-container {
+            width: 150px; /* Standard cover width */
+            height: 200px; /* Standard cover height */
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .book-cover-container:hover {
+            transform: translateY(-5px);
+        }
+        .book-cover-container canvas, .book-cover-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensure cover fits */
+            border-radius: 8px;
+        }
+        /* Kapak resmi değiştirme butonu artık hover'da görünmeyecek */
+        .book-cover-container .overlay-buttons {
+            display: none; /* Butonu tamamen gizle */
+        }
+
+        /* PDF Viewer Modal */
+        .pdf-viewer-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Dark overlay */
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevent scroll on body */
+        }
+        .pdf-viewer-content {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ensure content stays within bounds */
+        }
+        .pdf-viewer-canvas-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide overflow from canvas */
+            position: relative;
+        }
+        #pdfCanvas {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            touch-action: none; /* Prevent default browser touch actions like double-tap zoom */
+        }
+        /* Page turn animation classes */
+        /* Page flip for next page (now uses 'unflip' visual effect): unfolds from left to right */
+        .page-flip-effect {
+            animation: pageUnflip 0.8s forwards; /* Using pageUnflip animation for 'next' */
+            transform-origin: bottom left; /* Origin for unfolding from left */
+        }
+
+        /* Page unflip for previous page (now uses 'flip' visual effect): folds from right to left */
+        .page-unflip-effect {
+            animation: pageFlip 0.8s forwards; /* Using pageFlip animation for 'previous' */
+            transform-origin: bottom right; /* Origin for folding from right */
+        }
+
+        /* Original keyframes for reference, now used by swapped classes */
+        @keyframes pageFlip { /* This is the 'fold from right' animation */
+            0% {
+                transform: perspective(1000px) rotateY(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: perspective(1000px) rotateY(-90deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: perspective(1000px) rotateY(-180deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pageUnflip { /* This is the 'unfold from left' animation */
+            0% {
+                transform: perspective(1000px) rotateY(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: perspective(1000px) rotateY(90deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: perspective(1000px) rotateY(180deg);
+                opacity: 0;
+            }
+        }
+
+
+        /* Close button always visible, more prominent */
+        .pdf-close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.7); /* Darker background */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1; /* Fully opaque by default */
+            transition: background-color 0.2s, box-shadow 0.2s;
+            z-index: 10; /* Ensure it's above the canvas */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Add subtle shadow */
+        }
+        .pdf-close-button:hover {
+            background-color: rgba(0, 0, 0, 0.9); /* Even darker on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7); /* Stronger shadow on hover */
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #1a73e8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom scrollbar for horizontal categories */
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background: #a0a0a0;
+            border-radius: 10px;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
