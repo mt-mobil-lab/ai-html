@@ -1,0 +1,321 @@
+     /* Genel stil ayarları */
+        body {
+            font-family: 'Inter', sans-serif; /* Inter fontunu tercih ettim */
+            margin: 0;
+            background-color: #f0f2f5; /* Hafif gri arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Ana konteyner */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px; /* Yuvarlak köşeler */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Hafif gölge */
+        }
+
+        /* Başlık */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        /* Arama kutusu konteyneri */
+        #search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Arama giriş alanı */
+        #search-input {
+            padding: 12px 20px;
+            width: 70%;
+            max-width: 500px;
+            border: 1px solid #ced4da;
+            border-radius: 25px; /* Daha yuvarlak köşeler */
+            font-size: 1.1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #search-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* Kategori başlıkları */
+        .category-title {
+            color: #495057;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef; /* Alt çizgi */
+            padding-bottom: 8px;
+        }
+
+        /* Kitap listesi konteyneri (yatay kaydırma için) */
+        .book-list-container {
+            display: flex; /* Flexbox ile yatay düzen */
+            overflow-x: auto; /* Yatay kaydırma */
+            padding-bottom: 15px; /* Kaydırma çubuğu için boşluk */
+            -webkit-overflow-scrolling: touch; /* Mobil cihazlarda daha yumuşak kaydırma */
+            scrollbar-width: thin; /* Firefox için kaydırma çubuğu genişliği */
+            scrollbar-color: #a0a0a0 #f1f1f1; /* Firefox için kaydırma çubuğu rengi */
+        }
+
+        /* Webkit tabanlı tarayıcılar için kaydırma çubuğu stilleri */
+        .book-list-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .book-list-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .book-list-container::-webkit-scrollbar-thumb {
+            background: #a0a0a0;
+            border-radius: 10px;
+        }
+
+        .book-list-container::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+
+        /* Kitap öğesi */
+        .book-item {
+            flex: 0 0 auto; /* Esnekliği kapat, sabit genişlik */
+            width: 160px; /* Kitap öğesi genişliği */
+            margin-right: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .book-item:hover {
+            transform: translateY(-5px); /* Hafif yukarı kalkma efekti */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* Daha belirgin gölge */
+        }
+
+        /* Kitap kapağı */
+        .book-cover {
+            width: 100%; /* Kitap öğesinin genişliğini doldur */
+            height: 220px; /* Sabit yükseklik */
+            object-fit: cover; /* Resmi kutuya sığdır */
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Kitap başlığı */
+        .book-title {
+            font-size: 1em;
+            color: #333;
+            white-space: normal; /* Başlığın birden fazla satıra yayılmasına izin ver */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Maksimum 2 satır göster */
+            -webkit-box-orient: vertical;
+            min-height: 2.4em; /* İki satır için minimum yükseklik */
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        /* Kitap yazarı */
+        .book-author {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 0;
+        }
+
+        /* Modal (açılır pencere) */
+        .modal {
+            display: none; /* Varsayılan olarak gizli */
+            position: fixed; /* Sabit konum */
+            z-index: 1000; /* Diğer her şeyin üzerinde */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* İçerik taşarsa kaydırma */
+            background-color: rgba(0, 0, 0, 0.7); /* Yarı şeffaf siyah arka plan */
+            backdrop-filter: blur(5px); /* Arka planı bulanıklaştır */
+            -webkit-backdrop-filter: blur(5px); /* Safari desteği */
+        }
+
+        /* Modal içeriği */
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 2% auto; /* Dikeyde daha fazla yer bırakmak için */
+            padding: 20px;
+            border-radius: 10px;
+            width: 95%; /* Genişlik */
+            max-width: 1000px; /* Maksimum genişlik artırıldı */
+            height: 90vh; /* Yüksekliği ekranın %90'ı yap */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation-name: animatetop; /* Animasyon */
+            animation-duration: 0.4s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Modal giriş animasyonu */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* Kapatma düğmesi */
+        .modal-close {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 1001; /* Kapatma düğmesini diğer içeriğin üzerinde tutar */
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* PDF Görüntüleyici Konteyneri (FlowPaper için) */
+        .pdf-viewer-container {
+            flex-grow: 1; /* Modal içeriğinin kalan alanını doldur */
+            width: 100%;
+            height: 100%; /* Konteynerin tüm yüksekliğini kullan */
+            background-color: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px; /* Kapatma düğmesinden boşluk */
+            display: flex;
+            flex-direction: column; /* İçeriği dikeyde sırala */
+            align-items: center;
+            justify-content: center;
+            position: relative; /* Logo için konumlandırma */
+        }
+
+        .pdf-viewer-container iframe {
+            width: 100%;
+            height: calc(100% - 19px); /* Logo div'i için yer bırak */
+            border: none;
+            display: block;
+        }
+
+        .pdf-load-message {
+            color: #555;
+            font-size: 1.2em;
+            text-align: center;
+            padding: 20px;
+            position: absolute; /* iframe'in üzerinde görünmesi için */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 10; /* iframe'in üzerinde olmalı */
+        }
+
+        .pdf-load-message.error {
+            color: #dc3545; /* Kırmızı hata mesajı */
+            font-weight: bold;
+        }
+
+        /* FlowPaper logo alanı */
+        .flowpaper-logo-bottom {
+            background: linear-gradient(to right, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 200px);
+            width: 100%;
+            height: 19px;
+            padding-bottom: 1px;
+            padding-left: 5px;
+            padding-right: 10px;
+            display: flex;
+            align-items: center;
+            z-index:9999;
+            position: absolute; /* Konteynerin altına sabitle */
+            bottom: 0;
+            left: 0;
+        }
+
+        .flowpaper-logo-bottom span {
+            height: 37px;
+            padding-left: 6px;
+            width:90%;
+        }
+
+        .flowpaper-logo-bottom a {
+            fill: #fff;
+            text-decoration: none;
+            border-bottom: none;
+        }
+
+        .flowpaper-logo-bottom img {
+            height:17px;
+            width:auto;
+            margin-top:11px;
+            border:0;
+            vertical-align: middle;
+        }
+
+        .flowpaper-logo-bottom span:last-child {
+            float: right;
+            right: 0;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity:0.8;
+        }
+
+        /* Mobil uyumluluk */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            #search-input {
+                width: 90%;
+            }
+            .category-title {
+                font-size: 1.5em;
+            }
+            .book-item {
+                width: 130px; /* Mobil için daha küçük kitap öğeleri */
+                margin-right: 15px;
+            }
+            .book-cover {
+                height: 180px;
+            }
+            .book-title {
+                font-size: 0.9em;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+                padding: 15px;
+                height: 95vh; /* Mobil için daha fazla yükseklik */
+            }
+            .pdf-viewer-container {
+                min-height: 70vh; /* Mobil için daha fazla yükseklik */
+            }
+        }
