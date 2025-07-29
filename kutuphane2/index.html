@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Kitaplık</title>
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Online Kitaplık</h1>
+
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Kitap Adı, Yazar Ara...">
+        </div>
+
+        <div id="book-categories">
+            <!-- Kitap kategorileri ve kitaplar buraya JavaScript ile yüklenecek -->
+        </div>
+    </div>
+
+    <!-- Kitap okuma modalı -->
+    <div id="book-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="pdf-viewer" class="pdf-viewer-container">
+                <!-- PDF iframe'i veya hata mesajı buraya yüklenecek -->
+                <p id="pdf-loading-message" class="pdf-load-message">PDF Yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+<script src="kitap.js"></script>
+<script src="js.js"></script>
+  
+</body>
+</html>
