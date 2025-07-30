@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seyahat ve Tur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md py-4 relative">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-orange-500">Seyahat <span class="text-gray-800">& Tur</span></div>
+            <nav id="desktop-menu" class="hidden md:flex space-x-6">
+                <a href="#home" class="text-gray-600 hover:text-orange-500 transition duration-300">Anasayfa</a>
+                <a href="#offers" class="text-gray-600 hover:text-orange-500 transition duration-300">Güncel Fiyatlarımız</a>
+                <a href="#services" class="text-gray-600 hover:text-orange-500 transition duration-300">Hizmetlerimiz</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-orange-500 transition duration-300">Müşteri Deneyimleri</a>
+                <a href="#contact" class="text-gray-600 hover:text-orange-500 transition duration-300">İletişim</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <!-- Mobile Navigation Menu -->
+        <nav id="mobile-menu" class="hidden md:hidden flex-col items-center w-full">
+            <a href="#home" class="block w-full text-gray-600 hover:text-orange-500 transition duration-300 py-2">Anasayfa</a>
+            <a href="#offers" class="block w-full text-gray-600 hover:text-orange-500 transition duration-300 py-2">Güncel Fiyatlarımız</a>
+            <a href="#services" class="block w-full text-gray-600 hover:text-orange-500 transition duration-300 py-2">Hizmetlerimiz</a>
+            <a href="#testimonials" class="block w-full text-gray-600 hover:text-orange-500 transition duration-300 py-2">Müşteri Deneyimleri</a>
+            <a href="#contact" class="block w-full text-gray-600 hover:text-orange-500 transition duration-300 py-2">İletişim</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Slider -->
+    <section id="home" class="hero-section">
+        <!-- Slider Images Container -->
+        <div class="hero-image-carousel" id="hero-image-carousel">
+            <!-- Slide Item 1 -->
+            <div class="hero-slide-item">
+                <img src="https://placehold.co/1920x800/3498db/ffffff?text=Paris+Eyfel+Kulesi" class="hero-slider-image" alt="Paris Eyfel Kulesi">
+                <div class="hero-content container mx-auto px-4">
+                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4">Bir sonraki maceranızın zamanı geldi</h1>
+                    <p class="text-lg md:text-xl mb-8">Sizin için planlayalım</p>
+                    <a href="#offers" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">REZERVASYON YAP</a>
+                </div>
+            </div>
+
+            <!-- Slide Item 2 -->
+            <div class="hero-slide-item">
+                <img src="https://placehold.co/1920x800/27ae60/ffffff?text=Tropikal+Ada+Plaj%C4%B1" class="hero-slider-image" alt="Tropikal Ada Plajı">
+                <div class="hero-content container mx-auto px-4">
+                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4">Hayallerinizdeki Tatil Sizi Bekliyor</h1>
+                    <p class="text-lg md:text-xl mb-8">Eşsiz destinasyonları keşfedin</p>
+                    <a href="#offers" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">TEKLİFLERİ GÖR</a>
+                </div>
+            </div>
+
+            <!-- Slide Item 3 -->
+            <div class="hero-slide-item">
+                <img src="https://placehold.co/1920x800/e67e22/ffffff?text=Da%C4%9F+Manzaras%C4%B1" class="hero-slider-image" alt="Dağ Manzarası">
+                <div class="hero-content container mx-auto px-4">
+                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4">Unutulmaz Anılar Biriktirin</h1>
+                    <p class="text-lg md:text-xl mb-8">Her bütçeye uygun seçenekler</p>
+                    <a href="#offers" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">DAHA FAZLA BİLGİ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider Dots -->
+        <div class="dots-container" id="slider-dots">
+            <span class="dot active" data-slide-index="0"></span>
+            <span class="dot" data-slide-index="1"></span>
+            <span class="dot" data-slide-index="2"></span>
+        </div>
+    </section>
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-white rounded-lg shadow-md mx-4 md:mx-auto max-w-6xl -mt-10 relative z-10">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6 section-title mx-auto">Seyahat artık çok kolay</h2>
+            <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto">
+                Burada şirketinizden bahseden bir paragraf yazın. Şirketinizin geçmişi, tarihi, misyonu, vizyonu veya
+                felsefesi hakkında konuşabilirsiniz. Markanızın kişiliğini müşterilerinize tanıtacak herhangi bir şey. Bu, sizinle
+                onlar arasında bir bağ kurmanıza yardımcı olacak ve umarım bu da bir çalışma ilişkisine yol açacaktır.
+            </p>
+        </div>
+    </section>
+    <!-- Offers Section -->
+    <section id="offers" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-10 text-center section-title mx-auto">Güncel Fiyatlarımız</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Offer Card 1: Yaz Fırsatları -->
+                <div class="offer-card p-6">
+                    <h3 class="text-2xl font-semibold text-orange-500 mb-3">Doğaya Kaçış</h3>
+                    <p class="text-gray-600 mb-4">Başlangıç fiyatı: <span class="font-bold text-lg">999 TL</span></p>
+                    <ul class="list-disc list-inside text-gray-700 mb-6 space-y-2">
+                        <li>Gidiş-dönüş uçak bileti</li>
+                        <li>3 gece 4 gün iki kişilik oda</li>
+                        <li>Yarım pansiyon yemekler</li>
+                        <li>Rehberli doğa turu</li>
+                        <li>Hoş geldiniz içeceği</li>
+                    </ul>
+                    <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full transition duration-300">REZERVASYON YAP</button>
+                </div>
+
+                <!-- Offer Card 2: Romantik bir Kaçış -->
+                <div class="offer-card p-6">
+                    <h3 class="text-2xl font-semibold text-orange-500 mb-3">Romantik bir Kaçış</h3>
+                    <p class="text-gray-600 mb-4">Başlangıç fiyatı: <span class="font-bold text-lg">1500 TL</span></p>
+                    <ul class="list-disc list-inside text-gray-700 mb-6 space-y-2">
+                        <li>Gidiş dönüş uçak bileti</li>
+                        <li>3 gece 4 gün iki kişilik oda</li>
+                        <li>Tam pansiyon yemekler</li>
+                        <li>Spa ve masaj seansı</li>
+                        <li>Çiftler için meditasyon</li>
+                    </ul>
+                    <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full transition duration-300">REZERVASYON YAP</button>
+                </div>
+
+                <!-- Offer Card 3: Aile Tatili -->
+                <div class="offer-card p-6">
+                    <h3 class="text-2xl font-semibold text-orange-500 mb-3">Aile Tatili</h3>
+                    <p class="text-gray-600 mb-4">Başlangıç fiyatı: <span class="font-bold text-lg">3000 TL</span></p>
+                    <ul class="list-disc list-inside text-gray-700 mb-6 space-y-2">
+                        <li>Gidiş-dönüş uçak bileti</li>
+                        <li>3 gece 4 gün aile süiti</li>
+                        <li>Tam pansiyon yemekler</li>
+                        <li>Rehberli doğa turu</li>
+                        <li>Seçmeli grup aktivitesi</li>
+                    </ul>
+                    <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full transition duration-300">REZERVASYON YAP</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-10 text-center section-title mx-auto">Hizmetlerimiz</h2>
+            <!-- Service scroll container -->
+            <div class="flex overflow-x-auto snap-x snap-mandatory pb-4 space-x-6 lg:space-x-8 scroll-container">
+                <!-- Service Card 1: Uçuş Rezervasyonu -->
+                <div class="service-card snap-center text-center p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition duration-300">
+                    <div class="text-orange-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Uçuş Rezervasyonu</h3>
+                    <p class="text-gray-600">Hizmet tekliflerinizi burada paylaşın. Potansiyel müşterilerinize neden kullanmaları gerektiğine dair bir genel bakış sunun.</p>
+                </div>
+
+                <!-- Service Card 2: Turlar ve Aktiviteler -->
+                <div class="service-card snap-center text-center p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition duration-300">
+                    <div class="text-orange-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Turlar ve Aktiviteler</h3>
+                    <p class="text-gray-600">Hizmet tekliflerinizi burada paylaşın. Potansiyel müşterilerinize neden kullanmaları gerektiğine dair bir genel bakış sunun.</p>
+                </div>
+
+                <!-- Service Card 3: Havaalanı Transferleri -->
+                <div class="service-card snap-center text-center p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition duration-300">
+                    <div class="text-orange-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2zm3-13H6v2h2v-2zm0 4H6v2h2v-2zm0 4H6v2h2v-2zm4-12h-2v2h2v-2zm0 4h-2v2h2v-2zm0 4h-2v2h2v-2zm4-12h-2v2h2v-2zm0 4h-2v2h2v-2zm0 4h-2v2h2v-2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Havaalanı Transferleri</h3>
+                    <p class="text-gray-600">Hizmet tekliflerinizi burada paylaşın. Potansiyel müşterilerinize neden kullanmaları gerektiğine dair bir genel bakış sunun.</p>
+                </div>
+
+                <!-- Service Card 4: Otel Rezervasyonları -->
+                <div class="service-card snap-center text-center p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition duration-300">
+                    <div class="text-orange-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m-1 4h1m8-12h1m-1 4h1m-1 4h1M3 21h18"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Otel Rezervasyonları</h3>
+                    <p class="text-gray-600">Hizmet tekliflerinizi burada paylaşın. Potansiyel müşterilerinize neden kullanmaları gerektiğine dair bir genel bakış sunun.</p>
+                </div>
+
+                <!-- Add more service cards here if needed -->
+                <div class="service-card snap-center text-center p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition duration-300">
+                    <div class="text-orange-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10v11m0 0h6m-6 0a9 9 0 009-9V6a3 3 0 00-3-3H6a3 3 0 00-3 3v4m0 0h18"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Vize İşlemleri</h3>
+                    <p class="text-gray-600">Vize başvurularınızda size yardımcı oluyoruz. Gerekli evraklar ve süreç hakkında bilgi alın.</p>
+                </div>
+
+                <div class="service-card snap-center text-center p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-lg transition duration-300">
+                    <div class="text-orange-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 4v4m0 4v2m-6-4H6m4 0h4m-4 0h-4m-4-4h4m-4 0H6m4 0h4m-4 0h-4m-4-4h4m-4 0H6m4 0h4m-4 0h-4m-4-4h4m-4 0H6m4 0h4m-4 0h-4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Seyahat Sigortası</h3>
+                    <p class="text-gray-600">Seyahatiniz boyunca güvende olmanız için en uygun sigorta seçeneklerini sunuyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-10 text-center section-title mx-auto">Müşteri Deneyimleri</h2>
+            <!-- Testimonial scroll container -->
+            <div class="flex overflow-x-auto snap-x snap-mandatory pb-4 space-x-6 lg:space-x-8 scroll-container">
+                <!-- Testimonial Card 1 -->
+                <div class="testimonial-card snap-center p-6 text-center">
+                    <p class="text-gray-700 italic mb-4">"Müşterilerinizden gelen referansları ekleyerek ürün ve hizmetinizin güvenilirliğini artırın. İnsanlar önerileri sever, bu nedenle deneyen diğer kişilerin geri bildirimleri paha biçilemezdir."</p>
+                    <div class="font-semibold text-gray-800">Nail Söylemez</div>
+                    <div class="text-orange-500 text-lg">★★★★★</div>
+                </div>
+                <!-- Testimonial Card 2 -->
+                <div class="testimonial-card snap-center p-6 text-center">
+                    <p class="text-gray-700 italic mb-4">"Müşterilerinizden gelen referansları ekleyerek ürün ve hizmetinizin güvenilirliğini artırın. İnsanlar önerileri sever, bu nedenle deneyen diğer kişilerin geri bildirimleri paha biçilemezdir."</p>
+                    <div class="font-semibold text-gray-800">Jale Peker</div>
+                    <div class="text-orange-500 text-lg">★★★★★</div>
+                </div>
+                <!-- Testimonial Card 3 -->
+                <div class="testimonial-card snap-center p-6 text-center">
+                    <p class="text-700 italic mb-4">"Müşterilerinizden gelen referansları ekleyerek ürün ve hizmetinizin güvenilirliğini artırın. İnsanlar önerileri sever, bu nedenle deneyen diğer kişilerin geri bildirimleri paha biçilemezdir."</p>
+                    <div class="font-semibold text-gray-800">Narin Leyla</div>
+                    <div class="text-orange-500 text-lg">★★★★★</div>
+                </div>
+                <!-- Add more testimonial cards here if needed -->
+                <div class="testimonial-card snap-center p-6 text-center">
+                    <p class="text-gray-700 italic mb-4">"Seyahat & Tur ile seyahat etmek harikaydı! Her şey sorunsuzdu ve tatilimiz unutulmazdı. Kesinlikle tekrar kullanacağız."</p>
+                    <div class="font-semibold text-gray-800">Ayşe Yılmaz</div>
+                    <div class="text-orange-500 text-lg">★★★★★</div>
+                </div>
+                <div class="testimonial-card snap-center p-6 text-center">
+                    <p class="text-gray-700 italic mb-4">"Müşteri hizmetleri mükemmeldi. Her sorumuza anında yanıt aldık ve seyahatimiz boyunca desteklendik. Teşekkürler Seyahat & Tur!"</p>
+                    <div class="font-semibold text-gray-800">Can Demir</div>
+                    <div class="text-orange-500 text-lg">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer Section -->
+    <footer id="contact" class="footer-section py-12">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Company Info -->
+            <div>
+                <h3 class="text-xl font-bold mb-4">Seyahat <span class="text-orange-500">& Tur</span></h3>
+                <p class="text-gray-400 mb-2">Sıradaki seyahatinizi planlayalım</p>
+            </div>
+            <!-- Address -->
+            <div>
+                <h3 class="text-xl font-bold mb-4">Adres</h3>
+                <p class="text-gray-400">Mahalle</p>
+                <p class="text-gray-400">Bulvarı/Cadde</p>
+                <p class="text-gray-400">Sokak/no:/D:</p>
+                <p class="text-gray-400">İlçe/İl</p>
+            </div>
+            <!-- Contact & Hours -->
+            <div>
+                <h3 class="text-xl font-bold mb-4">İletişim</h3>
+                <p class="text-gray-400">Telefon: 0212 000 00 00</p>
+                <p class="text-gray-400">Mobil: 0212 000 00 00</p>
+                <p class="text-gray-400">Email: mail@mail.com.tr</p>
+                <h3 class="text-xl font-bold mt-6 mb-4">Çalışma Saatleri</h3>
+                <p class="text-gray-400">Pazartesi: 08:00-17:00</p>
+                <p class="text-gray-400">Salı: 08:00-17:00</p>
+                <p class="text-gray-400">Çarşamba: 08:00-17:00</p>
+                <p class="text-gray-400">Perşembe: 08:00-17:00</p>
+                <p class="text-400">Cuma: 08:00-17:00</p>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-8">
+            © 2025 Seyahat & Tur. Tüm Hakları Saklıdır.
+        </div>
+    </footer>
+        <script src="js.js"></script>
+</body>
+</html>
